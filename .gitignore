@@ -1,0 +1,40 @@
+# Cursor files
+.cursor/
+.cursorrules
+
+# Environment files
+.env
+.env.local
+.env.*
+
+# IDE and System files
+.idea/
+.vscode/
+.DS_Store
+
+# Dependencies
+node_modules/
+/backend/vendor/
+/backend/var/
+
+# Build files
+/dist/
+/build/
+*.log
+
+# Symfony specific
+/backend/public/bundles/
+/backend/var/
+/backend/vendor/
+/backend/.env.local
+/backend/.env.local.php
+/backend/.env.*.local
+/backend/config/secrets/prod/prod.decrypt.private.php
+
+# JWT
+/backend/config/jwt/*.pem
+
+# Cache and logs
+*.cache
+*.log
+.phpunit.result.cache
