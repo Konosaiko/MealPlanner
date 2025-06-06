@@ -29,6 +29,7 @@ node_modules/
 /backend/.env.local
 /backend/.env.local.php
 /backend/.env.*.local
+/backend/.env.dev
 /backend/config/secrets/prod/prod.decrypt.private.php
 
 # JWT
