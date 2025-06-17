@@ -39,3 +39,4 @@ node_modules/
 *.cache
 *.log
 .phpunit.result.cache
+backend/migrations/
