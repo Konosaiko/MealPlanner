@@ -32,6 +32,10 @@ class WeekMeal
     #[Groups(['week_meal:read'])]
     private ?\DateTimeImmutable $weekStart = null;
 
+    #[ORM\Column]
+    #[Groups(['week_meal:read', 'week_meal:write'])]
+    private ?int $portions = 1;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -87,6 +91,17 @@ class WeekMeal
     public function setWeekStart(\DateTimeImmutable $weekStart): static
     {
         $this->weekStart = $weekStart;
+        return $this;
+    }
+
+    public function getPortions(): ?int
+    {
+        return $this->portions;
+    }
+
+    public function setPortions(int $portions): static
+    {
+        $this->portions = $portions;
         return $this;
     }
 

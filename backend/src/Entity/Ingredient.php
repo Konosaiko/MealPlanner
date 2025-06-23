@@ -48,18 +48,18 @@ class Ingredient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ingredient:read', 'meal:read'])]
+    #[Groups(['ingredient:read', 'meal:read', 'shopping_list:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 255)]
-    #[Groups(['ingredient:read', 'ingredient:write', 'meal:read'])]
+    #[Groups(['ingredient:read', 'ingredient:write', 'meal:read', 'shopping_list:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
-    #[Groups(['ingredient:read', 'ingredient:write', 'meal:read'])]
+    #[Groups(['ingredient:read', 'ingredient:write', 'meal:read', 'shopping_list:read'])]
     private ?string $unit = null;
 
     #[ORM\Column(type: 'text', nullable: true)]

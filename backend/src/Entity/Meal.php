@@ -33,6 +33,11 @@ class Meal
     #[Groups(['meal:read', 'meal:write'])]
     private ?int $preparationTime = null;
 
+    #[ORM\Column]
+    #[Assert\Positive]
+    #[Groups(['meal:read', 'meal:write'])]
+    private ?int $portions = 1;
+
     #[ORM\OneToMany(mappedBy: 'meal', targetEntity: MealIngredient::class, cascade: ['persist', 'remove'])]
     private Collection $mealIngredients;
 
@@ -97,6 +102,17 @@ class Meal
     public function setPreparationTime(int $preparationTime): static
     {
         $this->preparationTime = $preparationTime;
+        return $this;
+    }
+
+    public function getPortions(): ?int
+    {
+        return $this->portions;
+    }
+
+    public function setPortions(int $portions): static
+    {
+        $this->portions = $portions;
         return $this;
     }
 
