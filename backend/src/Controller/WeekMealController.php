@@ -54,6 +54,7 @@ class WeekMealController extends AbstractController
         $weekMeal->setDay($data['day']);
         $weekMeal->setPeriod($data['period']);
         $weekMeal->setWeekStart(new \DateTimeImmutable($data['weekStart']));
+        $weekMeal->setPortions($data['portions'] ?? 1);
         $weekMeal->setUser($this->getUser());
 
         $this->entityManager->persist($weekMeal);

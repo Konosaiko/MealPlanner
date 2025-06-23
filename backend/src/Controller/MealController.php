@@ -52,6 +52,7 @@ class MealController extends AbstractController
         $meal->setName($data['name']);
         $meal->setDescription($data['description'] ?? null);
         $meal->setPreparationTime((int)$data['preparationTime']);
+        $meal->setPortions((int)($data['portions'] ?? 1));
         $meal->setUser($this->getUser());
 
         // Gestion des ingrédients
@@ -98,6 +99,7 @@ class MealController extends AbstractController
         $meal->setName($data['name']);
         $meal->setDescription($data['description'] ?? null);
         $meal->setPreparationTime((int)$data['preparationTime']);
+        $meal->setPortions((int)($data['portions'] ?? 1));
         $meal->setUpdatedAt(new \DateTimeImmutable());
 
         // Mise à jour des ingrédients - supprimer les anciens
