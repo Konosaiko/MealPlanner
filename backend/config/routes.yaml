@@ -29,3 +29,21 @@ api_week_meals:
     methods: GET
     defaults:
         _controller: App\Controller\WeekMealController::getWeekMeals
+
+api_shopping_list_generate:
+    path: /api/shopping-list/generate/{weekStart}
+    methods: POST
+    defaults:
+        _controller: App\Controller\ShoppingListController::generateShoppingList
+
+api_shopping_list_get:
+    path: /api/shopping-list/{weekStart}
+    methods: GET
+    defaults:
+        _controller: App\Controller\ShoppingListController::getShoppingList
+
+api_shopping_item_toggle:
+    path: /api/shopping-list/item/{id}/toggle
+    methods: PATCH
+    defaults:
+        _controller: App\Controller\ShoppingListController::toggleShoppingItem
