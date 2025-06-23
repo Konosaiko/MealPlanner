@@ -21,13 +21,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(normalizationContext: ['groups' => ['shopping_list:read']]),
         new Post(
             denormalizationContext: ['groups' => ['shopping_list:write']],
-            security: "is_granted('ROLE_USER') and object.getWeekPlanning().getOwner() == user"
+            security: "is_granted('ROLE_USER') and object.getUser() == user"
         ),
         new Put(
             denormalizationContext: ['groups' => ['shopping_list:write']],
-            security: "is_granted('ROLE_USER') and object.getWeekPlanning().getOwner() == user"
+            security: "is_granted('ROLE_USER') and object.getUser() == user"
         ),
-        new Delete(security: "is_granted('ROLE_USER') and object.getWeekPlanning().getOwner() == user")
+        new Delete(security: "is_granted('ROLE_USER') and object.getUser() == user")
     ],
     normalizationContext: ['groups' => ['shopping_list:read']],
     denormalizationContext: ['groups' => ['shopping_list:write']]
@@ -41,22 +41,26 @@ class ShoppingList
     #[Groups(['shopping_list:read'])]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'shoppingList', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false, unique: true)]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Groups(['shopping_list:read'])]
-    private ?WeekPlanning $weekPlanning = null;
+    private ?\DateTimeImmutable $weekStart = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['shopping_list:read'])]
+    private ?User $user = null;
 
     #[ORM\OneToMany(mappedBy: 'shoppingList', targetEntity: ShoppingItem::class, orphanRemoval: true)]
     #[Groups(['shopping_list:read'])]
-    private Collection $items;
+    private Collection $shoppingItems;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['shopping_list:read'])]
-    private ?\DateTimeInterface $generatedAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['shopping_list:read'])]
-    private ?\DateTimeInterface $lastUpdatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
     #[Groups(['shopping_list:read'])]
@@ -68,8 +72,8 @@ class ShoppingList
 
     public function __construct()
     {
-        $this->items = new ArrayCollection();
-        $this->generatedAt = new \DateTime();
+        $this->shoppingItems = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -77,63 +81,74 @@ class ShoppingList
         return $this->id;
     }
 
-    public function getWeekPlanning(): ?WeekPlanning
+    public function getWeekStart(): ?\DateTimeImmutable
     {
-        return $this->weekPlanning;
+        return $this->weekStart;
     }
 
-    public function setWeekPlanning(WeekPlanning $weekPlanning): static
+    public function setWeekStart(\DateTimeImmutable $weekStart): static
     {
-        $this->weekPlanning = $weekPlanning;
+        $this->weekStart = $weekStart;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
         return $this;
     }
 
     /**
      * @return Collection<int, ShoppingItem>
      */
-    public function getItems(): Collection
+    public function getShoppingItems(): Collection
     {
-        return $this->items;
+        return $this->shoppingItems;
     }
 
-    public function addItem(ShoppingItem $item): static
+    public function addShoppingItem(ShoppingItem $shoppingItem): static
     {
-        if (!$this->items->contains($item)) {
-            $this->items->add($item);
-            $item->setShoppingList($this);
+        if (!$this->shoppingItems->contains($shoppingItem)) {
+            $this->shoppingItems->add($shoppingItem);
+            $shoppingItem->setShoppingList($this);
         }
         return $this;
     }
 
-    public function removeItem(ShoppingItem $item): static
+    public function removeShoppingItem(ShoppingItem $shoppingItem): static
     {
-        if ($this->items->removeElement($item)) {
-            if ($item->getShoppingList() === $this) {
-                $item->setShoppingList(null);
+        if ($this->shoppingItems->removeElement($shoppingItem)) {
+            if ($shoppingItem->getShoppingList() === $this) {
+                $shoppingItem->setShoppingList(null);
             }
         }
         return $this;
     }
 
-    public function getGeneratedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->generatedAt;
+        return $this->createdAt;
     }
 
-    public function setGeneratedAt(\DateTimeInterface $generatedAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->generatedAt = $generatedAt;
+        $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getLastUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->lastUpdatedAt;
+        return $this->updatedAt;
     }
 
-    public function setLastUpdatedAt(?\DateTimeInterface $lastUpdatedAt): static
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
-        $this->lastUpdatedAt = $lastUpdatedAt;
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 

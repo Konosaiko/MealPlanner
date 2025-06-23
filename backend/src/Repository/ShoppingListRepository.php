@@ -38,4 +38,34 @@ class ShoppingListRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findOneByWeekAndUserWithItems(\DateTimeImmutable $weekStart, $user): ?ShoppingList
+    {
+        return $this->createQueryBuilder('sl')
+            ->select('sl', 'si', 'i')
+            ->leftJoin('sl.shoppingItems', 'si')
+            ->leftJoin('si.ingredient', 'i')
+            ->where('sl.weekStart = :weekStart')
+            ->andWhere('sl.user = :user')
+            ->setParameter('weekStart', $weekStart)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @return ShoppingList[]
+     */
+    public function findByUserWithStats($user): array
+    {
+        return $this->createQueryBuilder('sl')
+            ->select('sl', 'si', 'i')
+            ->leftJoin('sl.shoppingItems', 'si')
+            ->leftJoin('si.ingredient', 'i')
+            ->where('sl.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('sl.weekStart', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 } 

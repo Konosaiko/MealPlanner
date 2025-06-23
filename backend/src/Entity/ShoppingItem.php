@@ -19,13 +19,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(normalizationContext: ['groups' => ['shopping_item:read']]),
         new Post(
             denormalizationContext: ['groups' => ['shopping_item:write']],
-            security: "is_granted('ROLE_USER') and object.getShoppingList().getWeekPlanning().getOwner() == user"
+            security: "is_granted('ROLE_USER') and object.getShoppingList().getUser() == user"
         ),
         new Put(
             denormalizationContext: ['groups' => ['shopping_item:write']],
-            security: "is_granted('ROLE_USER') and object.getShoppingList().getWeekPlanning().getOwner() == user"
+            security: "is_granted('ROLE_USER') and object.getShoppingList().getUser() == user"
         ),
-        new Delete(security: "is_granted('ROLE_USER') and object.getShoppingList().getWeekPlanning().getOwner() == user")
+        new Delete(security: "is_granted('ROLE_USER') and object.getShoppingList().getUser() == user")
     ],
     normalizationContext: ['groups' => ['shopping_item:read']],
     denormalizationContext: ['groups' => ['shopping_item:write']]
@@ -36,33 +36,33 @@ class ShoppingItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['shopping_item:read'])]
+    #[Groups(['shopping_item:read', 'shopping_list:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['shopping_item:read', 'shopping_item:write'])]
+    #[Groups(['shopping_item:read', 'shopping_item:write', 'shopping_list:read'])]
     private ?Ingredient $ingredient = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(['shopping_item:read', 'shopping_item:write'])]
+    #[Groups(['shopping_item:read', 'shopping_item:write', 'shopping_list:read'])]
     private ?string $quantity = null;
 
-    #[ORM\ManyToOne(inversedBy: 'items')]
+    #[ORM\ManyToOne(inversedBy: 'shoppingItems')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['shopping_item:read'])]
     private ?ShoppingList $shoppingList = null;
 
     #[ORM\Column]
-    #[Groups(['shopping_item:read', 'shopping_item:write'])]
+    #[Groups(['shopping_item:read', 'shopping_item:write', 'shopping_list:read'])]
     private bool $isAvailable = false;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['shopping_item:read', 'shopping_item:write'])]
+    #[Groups(['shopping_item:read', 'shopping_item:write', 'shopping_list:read'])]
     private ?string $notes = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['shopping_item:read', 'shopping_item:write'])]
+    #[Groups(['shopping_item:read', 'shopping_item:write', 'shopping_list:read'])]
     private ?string $unit = null;
 
     public function getId(): ?int
